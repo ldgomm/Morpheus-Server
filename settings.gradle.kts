@@ -1,0 +1,1 @@
+rootProject.name = "me.ldgomm.morpheus"
