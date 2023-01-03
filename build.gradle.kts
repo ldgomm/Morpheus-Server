@@ -5,7 +5,7 @@ val logback_version: String by project
 plugins {
     kotlin("jvm") version "1.8.0"
     id("io.ktor.plugin") version "2.2.1"
-                id("org.jetbrains.kotlin.plugin.serialization") version "1.8.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.0"
 }
 
 group = "me.ldgomm"
@@ -32,4 +32,20 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+
+    val koin_version = "3.3.0"
+    val mongo_version = "4.8.0"
+
+    //Google client
+    implementation("com.google.api-client:google-api-client:2.0.1")
+
+    //Koin
+    implementation("io.insert-koin:koin-ktor:$koin_version")
+    implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
+
+    //KMongo
+    implementation("org.litote.kmongo:kmongo:$mongo_version")
+    implementation("org.litote.kmongo:kmongo-coroutine:$mongo_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+
 }
