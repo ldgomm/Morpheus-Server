@@ -1,4 +1,4 @@
-package me.ldgomm.plugins
+package me.ldgomm.server.util.plugins
 
 import io.ktor.server.plugins.callloging.*
 import org.slf4j.event.*
@@ -11,5 +11,4 @@ fun Application.configureMonitoring() {
         level = Level.INFO
         filter { call -> call.request.path().startsWith("/") }
     }
-
 }
