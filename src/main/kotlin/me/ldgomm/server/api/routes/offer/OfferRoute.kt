@@ -32,20 +32,20 @@ fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriabl
                         val offers: List<Offer>? = offerRepositoriable.readOffers()
                         if (offers != null) {
                             if (offers.isNotEmpty()) {
-                                call.respond(OK, message = OfferApiResponse(success = true, offers = offers))
+                                call.respond(OK, OfferApiResponse(success = true, offers = offers))
                             } else {
                                 call.respond(OK,
-                                             message = OfferApiResponse(success = true,
-                                                                        message = "No offers found",
-                                                                        offers = listOf(offer)))
+                                             OfferApiResponse(success = true,
+                                                              message = "No offers found",
+                                                              offers = listOf(offer)))
                             }
+                        } else {
+                            call.respond(Conflict)
                         }
                     } catch (e: Exception) {
                         app.log.info("Invalid request: ${e.message}")
                         call.respond(BadRequest,
-                                     message = OfferApiResponse(success = false,
-                                                                message = e.message,
-                                                                offers = listOf(offer)))
+                                     OfferApiResponse(success = false, message = e.message, offers = listOf(offer)))
                     }
                 }
             }

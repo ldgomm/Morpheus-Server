@@ -2,6 +2,7 @@ package me.ldgomm.server.api.routes.userpartner
 
 import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
+import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -31,7 +32,7 @@ fun Routing.userPartnerRoute(app: Application, partnerRepositoriable: PartnerRep
                                                                    message = "Partner exists",
                                                                    partner = partner))
                         } else {
-                            call.respond(HttpStatusCode.NotFound,
+                            call.respond(NotFound,
                                          AuthenticationApiResponse(success = false, message = "Partner not found"))
                         }
                     } catch (e: Exception) {
