@@ -16,6 +16,7 @@ import me.ldgomm.model.entity.offer.OfferApiResponse
 import me.ldgomm.model.repository.offer.OfferRepositoriable
 import me.ldgomm.server.api.endpoints.Endpoint.OfferRoute
 import me.ldgomm.server.api.endpoints.Endpoint.UnauthorizedRoute
+import me.ldgomm.server.util.constant.Constants.offer
 import me.ldgomm.server.util.extension.invalidSession
 import me.ldgomm.server.util.session.UserSession
 
@@ -47,9 +48,9 @@ fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriabl
                     invalidSession(app)
                 } else {
                     try {
-                        val request: OfferApiRequest = call.receive()
-                        if (offerRepositoriable.createOffer(offer = request.offer)) {
-                            call.respond(Created, OfferApiResponse(success = true, offer = request.offer))
+//                        val request: OfferApiRequest = call.receive()
+                        if (offerRepositoriable.createOffer(offer = offer)) {
+                            call.respond(Created, OfferApiResponse(success = true, offer = offer))
                         } else {
                             call.respond(Conflict, OfferApiResponse(message = "Offer not created, invalid request"))
                         }

@@ -17,6 +17,7 @@ import me.ldgomm.server.api.endpoints.Endpoint.RootRoute
 import me.ldgomm.server.api.routes.auth.appleTokenVerificationRoute
 import me.ldgomm.server.api.routes.offer.offerRoute
 import me.ldgomm.server.api.routes.userpartner.userPartnerRoute
+import me.ldgomm.server.util.constant.Constants.offer
 import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
@@ -36,39 +37,7 @@ fun Application.configureRouting() {
 
         route(RootRoute.path) {
             get {
-                call.respond(OK,
-                             Offer(title = "Programmer",
-                                   area = "Software",
-                                   schedule = "Morning",
-                                   modality = "Distance",
-                                   location = "Quito",
-                                   description = "Mobile programmer",
-                                   preparation = Preparation(education = listOf(Education(area = "Software",
-                                                                                          degree = "Engineering",
-                                                                                          level = "Third",
-                                                                                          specialization = "Mobile Applications",
-                                                                                          certifications = listOf(
-                                                                                              Certification(name = "Java",
-                                                                                                            area = "Programming",
-                                                                                                            description = "Java SE 8",
-                                                                                                            offerer = "Oracle",
-                                                                                                            site = "oracle.com",
-                                                                                                            year = "2018",
-                                                                                                            mandatory = false)),
-                                                                                          mandatory = true)),
-                                                             knowledge = listOf(Knowledge(name = "Java",
-                                                                                          description = "Java 11",
-                                                                                          mandatory = true)),
-                                                             experience = listOf(Experience(years = 2,
-                                                                                            mandatory = true))),
-                                   benefits = listOf(Benefit(name = "Name", description = "null")),
-                                   wageRange = WageRange(minimum = 1000, maximum = 2000, currency = "USD"),
-                                   details = listOf(Detail(name = "Salary", description = "No bad")),
-                                   publisher = "null",
-                                   publishedOn = System.currentTimeMillis() / 1000,
-                                   consumers = listOf("null"),
-                                   isActive = true,
-                                   timestamp = System.currentTimeMillis() / 1000))
+                call.respond( OK, OfferApiResponse(success = true, offer = offer))
             }
         }
     }
