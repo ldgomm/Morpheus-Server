@@ -56,13 +56,15 @@ fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriabl
                     invalidSession(app)
                 } else {
                     try {
-                        val request: OfferApiRequest = call.receive()
-                        if (offerRepositoriable.createOffer(offer = request.offer)) {
-                            call.respond(Created, OfferApiResponse(success = true, offer = request.offer))
-                        } else {
-                            call.respond(Conflict,
-                                         OfferApiResponse(success = true,
-                                                          message = "Offer not created, invalid request"))
+                        val request: OfferApiRequest? = call.receive()
+                        if (request != null) {
+                            if (offerRepositoriable.createOffer(offer = request.offer)) {
+                                call.respond(Created, OfferApiResponse(success = true, offer = request.offer))
+                            } else {
+                                call.respond(Conflict,
+                                             OfferApiResponse(success = true,
+                                                              message = "Offer not created, invalid request"))
+                            }
                         }
                     } catch (e: Exception) {
                         app.log.info("Invalid request: ${e.message}")
