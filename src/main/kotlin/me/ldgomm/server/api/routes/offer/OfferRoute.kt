@@ -29,15 +29,23 @@ fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriabl
                     invalidSession(app)
                 } else {
                     try {
-                        val offers: List<Offer> = offerRepositoriable.readOffers()
-                        if (offers.isNotEmpty()) {
-                            call.respond(OK, OfferApiResponse(success = true, offers = offers))
-                        } else {
-                            call.respond(NotFound, OfferApiResponse(success = false, message = "No offers found"))
+                        val offers: List<Offer>? = offerRepositoriable.readOffers()
+                        if (offers != null) {
+                            if (offers.isNotEmpty()) {
+                                call.respond(OK, message = OfferApiResponse(success = true, offers = offers))
+                            } else {
+                                call.respond(OK,
+                                             message = OfferApiResponse(success = true,
+                                                                        message = "No offers found",
+                                                                        offers = listOf(offer)))
+                            }
                         }
                     } catch (e: Exception) {
                         app.log.info("Invalid request: ${e.message}")
-                        call.respond(BadRequest, OfferApiResponse(success = false, message = e.message))
+                        call.respond(BadRequest,
+                                     message = OfferApiResponse(success = false,
+                                                                message = e.message,
+                                                                offers = listOf(offer)))
                     }
                 }
             }
@@ -48,9 +56,9 @@ fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriabl
                     invalidSession(app)
                 } else {
                     try {
-//                        val request: OfferApiRequest = call.receive()
-                        if (offerRepositoriable.createOffer(offer = offer)) {
-                            call.respond(Created, OfferApiResponse(success = true, offer = offer))
+                        val request: OfferApiRequest = call.receive()
+                        if (offerRepositoriable.createOffer(offer = request.offer)) {
+                            call.respond(Created, OfferApiResponse(success = true, offer = request.offer))
                         } else {
                             call.respond(Conflict, OfferApiResponse(message = "Offer not created, invalid request"))
                         }

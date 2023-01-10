@@ -16,7 +16,7 @@ class OfferRepository(db: CoroutineDatabase) : OfferRepositoriable {
         }
     }
 
-    override suspend fun readOffers(): List<Offer> {
+    override suspend fun readOffers(): List<Offer>? {
         return offerCollection.find().descendingSort(Offer::timestamp).toList()
     }
 
