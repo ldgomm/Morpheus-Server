@@ -8,4 +8,4 @@ data class Education(var area: String? = null,
                      var level: String? = null,
                      var specialization: String? = null,
                      var certifications: List<Certification>? = null,
-                     var mandatory: Boolean = false)
+                     var mandatory: Boolean? = false)

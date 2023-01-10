@@ -9,4 +9,4 @@ data class Certification(var name: String? = null,
                          var offerer: String? = null,
                          var site: String? = null,
                          var year: String? = null,
-                         var mandatory: Boolean = false)
+                         var mandatory: Boolean? = false)
