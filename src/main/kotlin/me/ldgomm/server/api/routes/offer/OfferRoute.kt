@@ -8,13 +8,13 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.pipeline.*
 import me.ldgomm.model.entity.offer.Offer
 import me.ldgomm.model.entity.offer.OfferApiRequest
 import me.ldgomm.model.entity.offer.OfferApiResponse
 import me.ldgomm.model.repository.offer.OfferRepositoriable
 import me.ldgomm.server.api.endpoints.Endpoint.OfferRoute
 import me.ldgomm.server.api.endpoints.Endpoint.UnauthorizedRoute
+import me.ldgomm.server.util.extension.invalidSession
 import me.ldgomm.server.util.session.UserSession
 
 fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriable) {
@@ -59,9 +59,4 @@ fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriabl
             }
         }
     }
-}
-
-private suspend fun PipelineContext<Unit, ApplicationCall>.invalidSession(app: Application) {
-    app.log.info("Invalid session")
-    call.respondRedirect(UnauthorizedRoute.path)
 }

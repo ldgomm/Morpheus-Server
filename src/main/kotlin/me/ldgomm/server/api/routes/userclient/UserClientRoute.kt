@@ -7,11 +7,11 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
-import io.ktor.util.pipeline.*
-import me.ldgomm.server.api.endpoints.Endpoint.ClientRoute
-import me.ldgomm.server.api.endpoints.Endpoint.UnauthorizedRoute
 import me.ldgomm.model.entity.auth.AuthenticationApiResponse
 import me.ldgomm.model.repository.userclient.ClientRepositoriable
+import me.ldgomm.server.api.endpoints.Endpoint.ClientRoute
+import me.ldgomm.server.api.endpoints.Endpoint.UnauthorizedRoute
+import me.ldgomm.server.util.extension.invalidSession
 import me.ldgomm.server.util.session.UserSession
 
 fun Routing.userClientRoute(app: Application, clientRepositoriable: ClientRepositoriable) {
@@ -53,9 +53,4 @@ fun Routing.userClientRoute(app: Application, clientRepositoriable: ClientReposi
             }
         }
     }
-}
-
-private suspend fun PipelineContext<Unit, ApplicationCall>.invalidSession(app: Application) {
-    app.log.info("Invalid session")
-    call.respondRedirect(UnauthorizedRoute.path)
 }

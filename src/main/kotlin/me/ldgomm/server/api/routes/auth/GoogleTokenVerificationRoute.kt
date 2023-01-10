@@ -16,6 +16,7 @@ import me.ldgomm.model.entity.user.Partner
 import me.ldgomm.model.repository.auth.AuthenticationRepositoriable
 import me.ldgomm.server.api.endpoints.Endpoint.*
 import me.ldgomm.server.util.constant.Constants.issuer
+import me.ldgomm.server.util.extension.unauthorizedRoute
 import me.ldgomm.server.util.session.UserSession
 
 fun Routing.googleTokenVerificationRoute(app: Application, authenticationRepositoriable: AuthenticationRepositoriable) {
@@ -83,9 +84,4 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.createUserPartner(app
     } else {
         unauthorizedRoute(app)
     }
-}
-
-suspend fun PipelineContext<Unit, ApplicationCall>.unauthorizedRoute(app: Application) {
-    app.log.info("Error creating new user")
-    call.respondRedirect(UnauthorizedRoute.path)
 }

@@ -13,6 +13,7 @@ import me.ldgomm.model.entity.user.Client
 import me.ldgomm.model.entity.user.Partner
 import me.ldgomm.model.repository.auth.AuthenticationRepositoriable
 import me.ldgomm.server.api.endpoints.Endpoint.*
+import me.ldgomm.server.util.extension.unauthorizedRoute
 import me.ldgomm.server.util.session.UserSession
 import java.io.UnsupportedEncodingException
 import java.util.*
@@ -61,9 +62,9 @@ class AppleIdTokenDecoder {
     companion object {
         @Throws(UnsupportedEncodingException::class)
         fun getDecoded(idToken: String): AppleIdTokenDecoder? {
-            val pieces = idToken.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            val payload = pieces[1]
-            val decoder = Base64.getUrlDecoder()
+            val pieces: Array<String> = idToken.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val payload: String = pieces[1]
+            val decoder: Base64.Decoder = Base64.getUrlDecoder()
             val jsonString = String(decoder.decode(payload))
             return Gson().fromJson(jsonString, AppleIdTokenDecoder::class.java)
         }
@@ -78,6 +79,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.createUserClient(app:
         call.sessions.set(UserSession(idSession = client.idUser))
         call.respondRedirect(AuthorizedRoute.path)
     } else {
+        app.log.info("Error creating new user partner")
         unauthorizedRoute(app)
     }
 }
@@ -90,7 +92,7 @@ private suspend fun PipelineContext<Unit, ApplicationCall>.createUserPartner(app
         call.sessions.set(UserSession(idSession = partner.idUser))
         call.respondRedirect(AuthorizedRoute.path)
     } else {
-        app.log.info("Error creating new user")
-        call.respondRedirect(UnauthorizedRoute.path)
+        app.log.info("Error creating new user partner")
+        unauthorizedRoute(app)
     }
 }
