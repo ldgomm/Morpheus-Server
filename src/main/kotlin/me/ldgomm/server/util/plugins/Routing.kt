@@ -37,7 +37,17 @@ fun Application.configureRouting() {
 
         route(RootRoute.path) {
             get {
-                call.respond( OK, OfferApiResponse(success = true, offer = offer))
+                call.respond(OK)
+            }
+        }
+        route("1") {
+            get {
+                call.respond(OK, offer)
+            }
+        }
+        route("2") {
+            get {
+                call.respond(OK, OfferApiResponse(success = true, message = "Offer message", offer = offer))
             }
         }
     }
