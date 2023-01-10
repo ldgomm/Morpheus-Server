@@ -17,7 +17,7 @@ class AuthenticationRepository(db: CoroutineDatabase) : AuthenticationRepositori
     }
 
     override suspend fun createUserPartner(partner: Partner): Boolean {
-        return if (partnerCollection.findOne(filter = Client::idUser eq partner.idUser) == null) {
+        return if (partnerCollection.findOne(filter = Partner::idUser eq partner.idUser) == null) {
             partnerCollection.insertOne(partner).wasAcknowledged()
         } else {
             true

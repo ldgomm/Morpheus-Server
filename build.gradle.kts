@@ -17,6 +17,10 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
+tasks {
+    create("stage").dependsOn("installDist")
+}
+
 repositories {
     mavenCentral()
 }
@@ -33,6 +37,7 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
+    val commons_codec_version = "1.15"
     val koin_version = "3.3.0"
     val mongo_version = "4.8.0"
 
@@ -47,5 +52,7 @@ dependencies {
     implementation("org.litote.kmongo:kmongo:$mongo_version")
     implementation("org.litote.kmongo:kmongo-coroutine:$mongo_version")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+
+    implementation("commons-codec:commons-codec:$commons_codec_version")
 
 }
