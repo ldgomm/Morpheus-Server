@@ -60,7 +60,9 @@ fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriabl
                         if (offerRepositoriable.createOffer(offer = request.offer)) {
                             call.respond(Created, OfferApiResponse(success = true, offer = request.offer))
                         } else {
-                            call.respond(Conflict, OfferApiResponse(message = "Offer not created, invalid request"))
+                            call.respond(Conflict,
+                                         OfferApiResponse(success = true,
+                                                          message = "Offer not created, invalid request"))
                         }
                     } catch (e: Exception) {
                         app.log.info("Invalid request: ${e.message}")
