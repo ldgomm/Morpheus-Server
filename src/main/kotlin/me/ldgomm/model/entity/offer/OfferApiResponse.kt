@@ -1,6 +1,6 @@
 package me.ldgomm.model.entity.offer
 
-data class OfferApiResponse(var success: Boolean = false,
-                            var message: String? = null,
-                            var offer: Offer? = null,
-                            var offers: List<Offer>? = null)
+data class OfferApiResponse(val success: Boolean = false,
+                            val message: String? = null,
+                            val offer: Offer? = null,
+                            val offers: List<Offer>? = null)
