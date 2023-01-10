@@ -1,7 +1,9 @@
 package me.ldgomm.server.api.routes.offer
 
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
+import io.ktor.http.HttpStatusCode.Companion.Conflict
 import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -30,11 +32,11 @@ fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriabl
                         if (offers.isNotEmpty()) {
                             call.respond(OK, OfferApiResponse(success = true, offers = offers))
                         } else {
-                            call.respond(OK, OfferApiResponse(success = false, offers = listOf()))
+                            call.respond(NotFound, OfferApiResponse(success = false, message = "No offers found"))
                         }
                     } catch (e: Exception) {
                         app.log.info("Invalid request: ${e.message}")
-                        call.respondRedirect(UnauthorizedRoute.path)
+                        call.respond(BadRequest, OfferApiResponse(success = false, message = e.message))
                     }
                 }
             }
@@ -46,14 +48,37 @@ fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriabl
                 } else {
                     try {
                         val request: OfferApiRequest = call.receive()
-                        if (offerRepositoriable.createOffer(request.offer)) {
+                        if (offerRepositoriable.createOffer(offer = request.offer)) {
                             call.respond(Created, OfferApiResponse(success = true, offer = request.offer))
                         } else {
-                            call.respond(BadRequest, OfferApiResponse(message = "Offer not created, invalid request"))
+                            call.respond(Conflict, OfferApiResponse(message = "Offer not created, invalid request"))
                         }
                     } catch (e: Exception) {
                         app.log.info("Invalid request: ${e.message}")
-                        call.respondRedirect(UnauthorizedRoute.path)
+                        call.respond(BadRequest, OfferApiResponse(success = false, message = e.message))
+                    }
+                }
+            }
+
+            put {
+
+            }
+
+            delete {
+                val userSession: UserSession? = call.principal()
+                if (userSession == null) {
+                    invalidSession(app)
+                } else {
+                    try {
+                        val request: OfferApiRequest = call.receive()
+                        if (offerRepositoriable.deleteOffer(request.offer)) {
+                            call.respond(OK, OfferApiResponse(success = true, message = "Offer deleted"))
+                        } else {
+                            call.respond(NotFound, OfferApiResponse(success = false, "No offer found"))
+                        }
+                    } catch (e: Exception) {
+                        app.log.info("Invalid deleting offer: ${e.message}")
+                        call.respond(BadRequest, OfferApiResponse(success = false, message = "Error deleting offer"))
                     }
                 }
             }

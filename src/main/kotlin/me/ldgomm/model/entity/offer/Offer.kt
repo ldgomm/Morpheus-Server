@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Serializable
-data class Offer(var idOffer: String = UUID.randomUUID().toString(),
+data class Offer(val idOffer: String = UUID.randomUUID().toString(),
                  var title: String,
                  var area: String,
                  var schedule: String,
@@ -15,6 +15,8 @@ data class Offer(var idOffer: String = UUID.randomUUID().toString(),
                  var benefits: List<Benefit>? = null,
                  var wageRange: WageRange? = null,
                  var details: List<Detail>? = null,
-                 var publisher: String? = null,
+                 val publisher: String? = null,
+                 var publishedOn: Long? = null,
                  var consumers: List<String>? = null,
-                 var timestamp: Long = System.currentTimeMillis() / 1000)
+                 var isActive: Boolean = false,
+                 val timestamp: Long = System.currentTimeMillis() / 1000)

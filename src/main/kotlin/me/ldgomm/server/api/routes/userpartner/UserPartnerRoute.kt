@@ -1,5 +1,6 @@
 package me.ldgomm.server.api.routes.userpartner
 
+import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.*
@@ -8,9 +9,9 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import me.ldgomm.model.entity.auth.AuthenticationApiResponse
+import me.ldgomm.model.entity.user.Partner
 import me.ldgomm.model.repository.userpartner.PartnerRepositoriable
 import me.ldgomm.server.api.endpoints.Endpoint.PartnerRoute
-import me.ldgomm.server.api.endpoints.Endpoint.UnauthorizedRoute
 import me.ldgomm.server.util.extension.invalidSession
 import me.ldgomm.server.util.session.UserSession
 
@@ -18,18 +19,26 @@ fun Routing.userPartnerRoute(app: Application, partnerRepositoriable: PartnerRep
     authenticate("auth-session") {
         route(PartnerRoute.path) {
             get {
-                val userSession: UserSession? = call.principal()
+                val userSession = call.principal<UserSession>()
                 if (userSession == null) {
                     invalidSession(app)
                 } else {
                     try {
-                        call.respond(OK,
-                                     AuthenticationApiResponse(success = true,
-                                                               partner = partnerRepositoriable.readPartner(
-                                                                   userSession.idSession)))
+                        val partner: Partner? = partnerRepositoriable.readPartner(userSession.idSession)
+                        if (partner != null) {
+                            call.respond(OK,
+                                         AuthenticationApiResponse(success = true,
+                                                                   message = "Partner exists",
+                                                                   partner = partner))
+                        } else {
+                            call.respond(HttpStatusCode.NotFound,
+                                         AuthenticationApiResponse(success = false, message = "Partner not found"))
+                        }
                     } catch (e: Exception) {
-                        app.log.info("Invalid saving user: ${e.message}")
-                        call.respondRedirect(UnauthorizedRoute.path)
+                        app.log.info("Invalid getting partner: ${e.message}")
+                        call.respond(BadRequest,
+                                     AuthenticationApiResponse(success = false,
+                                                               message = "Error getting partner: ${e.message}"))
                     }
                 }
             }
@@ -42,12 +51,17 @@ fun Routing.userPartnerRoute(app: Application, partnerRepositoriable: PartnerRep
                     try {
                         call.sessions.clear<UserSession>()
                         if (partnerRepositoriable.deletePartner(userSession.idSession)) {
-                            app.log.info("User successfully deleted")
-                            call.respond(OK, AuthenticationApiResponse(success = true))
+                            app.log.info("Partner successfully deleted")
+                            call.respond(OK, AuthenticationApiResponse(success = true, "Partner deleted"))
+                        } else {
+                            call.respond(HttpStatusCode.Conflict,
+                                         AuthenticationApiResponse(success = false,
+                                                                   message = "Partner was not deleted"))
                         }
                     } catch (e: Exception) {
-                        app.log.info("Invalid saving user: ${e.message}")
-                        call.respond(BadRequest, AuthenticationApiResponse(success = false))
+                        app.log.info("Invalid deleting partner: ${e.message}")
+                        call.respond(BadRequest,
+                                     AuthenticationApiResponse(success = false, message = "Partner was not deleted"))
                     }
                 }
             }
