@@ -6,13 +6,24 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import me.ldgomm.model.entity.auth.AuthenticationApiResponse
+import me.ldgomm.model.repository.userclient.ClientRepositoriable
 import me.ldgomm.server.api.endpoints.Endpoint.AuthorizedRoute
+import me.ldgomm.server.util.extension.invalidSession
+import me.ldgomm.server.util.session.UserSession
 
-fun Routing.authorizedRoute() {
+fun Routing.authorizedRoute(app: Application, clientRepositoriable: ClientRepositoriable) {
     authenticate("auth-session") {
         route(AuthorizedRoute.path) {
             get {
-                call.respond(OK, AuthenticationApiResponse(success = true, message = "User authenticated"))
+                val userSession: UserSession? = call.principal()
+                if (userSession == null) {
+                    invalidSession(app)
+                } else {
+                    call.respond(OK,
+                                 AuthenticationApiResponse(success = true,
+                                                           message = "User authenticated",
+                                                           client = clientRepositoriable.readClient(idClient = userSession.idSession)))
+                }
             }
         }
     }
