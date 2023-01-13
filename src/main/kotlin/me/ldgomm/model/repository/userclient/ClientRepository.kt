@@ -7,8 +7,8 @@ import org.litote.kmongo.eq
 class ClientRepository(db: CoroutineDatabase) : ClientRepositoriable {
     private val clientCollection = db.getCollection<Client>()
 
-    override suspend fun readClient(idClient: String): Client {
-        return clientCollection.findOne(filter = Client::idUser eq idClient)!!
+    override suspend fun readClient(idClient: String): Client? {
+        return clientCollection.findOne(filter = Client::idUser eq idClient)
     }
 
     override suspend fun updateClient(name: String): Boolean {

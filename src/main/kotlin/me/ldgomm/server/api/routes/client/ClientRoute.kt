@@ -25,10 +25,14 @@ fun Routing.clientRoute(app: Application, clientRepositoriable: ClientRepositori
                     invalidSession(app)
                 } else {
                     try {
-                        val client: Client = clientRepositoriable.readClient(idClient = userSession.idSession)
-                        app.log.info("Client exists")
-                        call.respond(OK,
-                                     ClientApiResponse(success = true, message = "Client exists", client = client))
+                        val client: Client? = clientRepositoriable.readClient(idClient = userSession.idSession)
+                        if (client != null) {
+                            app.log.info("Client exists")
+                            call.respond(OK,
+                                         ClientApiResponse(success = true, message = "Client exists", client = client))
+                        } else {
+                            call.respond(NotFound, ClientApiResponse(success = false, message = "Client not found"))
+                        }
                     } catch (e: Exception) {
                         app.log.info("Invalid getting client: ${e.message}")
                         call.respond(BadRequest,
@@ -48,7 +52,7 @@ fun Routing.clientRoute(app: Application, clientRepositoriable: ClientRepositori
                             app.log.info("Client successfully deleted")
                             call.respond(OK, ClientApiResponse(success = true, "Client deleted"))
                         } else {
-                            call.respond(Conflict, ClientApiResponse(success = false, message = "User was not deleted"))
+                            call.respond(Conflict, ClientApiResponse(success = false, message = "Client was not deleted"))
                         }
                     } catch (e: Exception) {
                         app.log.info("Invalid deleting user: ${e.message}")
