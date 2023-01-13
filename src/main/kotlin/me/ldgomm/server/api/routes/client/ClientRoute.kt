@@ -25,15 +25,10 @@ fun Routing.clientRoute(app: Application, clientRepositoriable: ClientRepositori
                     invalidSession(app)
                 } else {
                     try {
-                        val client: Client? = clientRepositoriable.readClient(idClient = userSession.idSession)
-                        if (client != null) {
-                            app.log.info("Client exists")
-                            call.respond(OK,
-                                         ClientApiResponse(success = true, message = "Client exists", client = client))
-                        } else {
-                            app.log.info("Client not found")
-                            call.respond(NotFound, ClientApiResponse(success = false, message = "Client not found"))
-                        }
+                        val client: Client = clientRepositoriable.readClient(idClient = userSession.idSession)
+                        app.log.info("Client exists")
+                        call.respond(OK,
+                                     ClientApiResponse(success = true, message = "Client exists", client = client))
                     } catch (e: Exception) {
                         app.log.info("Invalid getting client: ${e.message}")
                         call.respond(BadRequest,
