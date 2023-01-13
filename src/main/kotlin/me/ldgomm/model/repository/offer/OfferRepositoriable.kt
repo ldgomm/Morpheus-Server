@@ -7,6 +7,8 @@ sealed interface OfferRepositoriable {
 
     suspend fun readOffers(): List<Offer>?
 
+    suspend fun readOffer(offer: Offer): Offer?
+
     suspend fun updateOffer(offer: Offer): Boolean
 
     suspend fun deleteOffer(offer: Offer): Boolean

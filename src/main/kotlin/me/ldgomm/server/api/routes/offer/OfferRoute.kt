@@ -15,8 +15,6 @@ import me.ldgomm.model.entity.offer.OfferApiRequest
 import me.ldgomm.model.entity.offer.OfferApiResponse
 import me.ldgomm.model.repository.offer.OfferRepositoriable
 import me.ldgomm.server.api.endpoints.Endpoint.OfferRoute
-import me.ldgomm.server.api.endpoints.Endpoint.UnauthorizedRoute
-import me.ldgomm.server.util.constant.Constants.offer
 import me.ldgomm.server.util.extension.invalidSession
 import me.ldgomm.server.util.session.UserSession
 
@@ -34,18 +32,17 @@ fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriabl
                             if (offers.isNotEmpty()) {
                                 call.respond(OK, OfferApiResponse(success = true, offers = offers))
                             } else {
-                                call.respond(OK,
-                                             OfferApiResponse(success = true,
-                                                              message = "No offers found",
-                                                              offers = listOf(offer)))
+                                call.respond(NotFound,
+                                             OfferApiResponse(success = false,
+                                                              message = "No offers found"))
                             }
                         } else {
-                            call.respond(Conflict)
+                            call.respond(Conflict, OfferApiResponse(success = false, message = "Conflict"))
                         }
                     } catch (e: Exception) {
                         app.log.info("Invalid request: ${e.message}")
                         call.respond(BadRequest,
-                                     OfferApiResponse(success = false, message = e.message, offers = listOf(offer)))
+                                     OfferApiResponse(success = false, message = e.message))
                     }
                 }
             }
@@ -56,15 +53,13 @@ fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriabl
                     invalidSession(app)
                 } else {
                     try {
-                        val request: OfferApiRequest? = call.receive()
-                        if (request != null) {
-                            if (offerRepositoriable.createOffer(offer = request.offer)) {
-                                call.respond(Created, OfferApiResponse(success = true, offer = request.offer))
-                            } else {
-                                call.respond(Conflict,
-                                             OfferApiResponse(success = true,
-                                                              message = "Offer not created, invalid request"))
-                            }
+                        val request: OfferApiRequest = call.receive()
+                        if (offerRepositoriable.createOffer(offer = request.offer)) {
+                            call.respond(Created, OfferApiResponse(success = true, offer = request.offer))
+                        } else {
+                            call.respond(Conflict,
+                                         OfferApiResponse(success = true,
+                                                          message = "Offer not created, invalid request"))
                         }
                     } catch (e: Exception) {
                         app.log.info("Invalid request: ${e.message}")
@@ -84,10 +79,15 @@ fun Routing.offerRoute(app: Application, offerRepositoriable: OfferRepositoriabl
                 } else {
                     try {
                         val request: OfferApiRequest = call.receive()
-                        if (offerRepositoriable.deleteOffer(request.offer)) {
-                            call.respond(OK, OfferApiResponse(success = true, message = "Offer deleted"))
+                        val offer: Offer? = offerRepositoriable.readOffer(request.offer)
+                        if (offer != null) {
+                            if (offerRepositoriable.deleteOffer(offer)) {
+                                call.respond(OK, OfferApiResponse(success = true, message = "Offer deleted"))
+                            } else {
+                                call.respond(NotFound, OfferApiResponse(success = false, "No offer found"))
+                            }
                         } else {
-                            call.respond(NotFound, OfferApiResponse(success = false, "No offer found"))
+                            call.respond(Conflict, OfferApiResponse(success = false, message = "Conflict"))
                         }
                     } catch (e: Exception) {
                         app.log.info("Invalid deleting offer: ${e.message}")

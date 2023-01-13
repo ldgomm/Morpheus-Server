@@ -1,4 +1,4 @@
-package me.ldgomm.server.api.routes.userpartner
+package me.ldgomm.server.api.routes.partner
 
 import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
@@ -16,7 +16,7 @@ import me.ldgomm.server.api.endpoints.Endpoint.PartnerRoute
 import me.ldgomm.server.util.extension.invalidSession
 import me.ldgomm.server.util.session.UserSession
 
-fun Routing.userPartnerRoute(app: Application, partnerRepositoriable: PartnerRepositoriable) {
+fun Routing.partnerRoute(app: Application, partnerRepositoriable: PartnerRepositoriable) {
     authenticate("auth-session") {
         route(PartnerRoute.path) {
             get {

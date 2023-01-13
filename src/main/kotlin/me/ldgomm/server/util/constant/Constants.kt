@@ -12,8 +12,8 @@ object Constants {
                       area = "Software",
                       schedule = "Morning",
                       modality = "Distance",
-                      location = "Quito",
                       description = "Mobile programmer",
+                      location = Location(latitude = 0.0, longitude = 0.0),
                       preparation = Preparation(education = listOf(Education(area = "Software",
                                                                              degree = "Engineering",
                                                                              level = "Third",
@@ -24,7 +24,7 @@ object Constants {
                                                                                                                    offerer = "Oracle",
                                                                                                                    site = "oracle.com",
                                                                                                                    year = "2018",
-                                                                                                                   mandatory = false)),
+                                                                                                                   mandatory = true)),
                                                                              mandatory = true)),
                                                 knowledge = listOf(Knowledge(name = "Java",
                                                                              description = "Java 11",
@@ -34,8 +34,30 @@ object Constants {
                       wageRange = WageRange(minimum = 1000, maximum = 2000, currency = "USD"),
                       details = listOf(Detail(name = "Salary", description = "No bad")),
                       publisher = "null",
-                      publishedOn = System.currentTimeMillis() / 1000,
                       consumers = listOf("null"),
                       isActive = true,
                       timestamp = System.currentTimeMillis() / 1000)
 }
+
+//@HiltViewModel
+//class OfferViewModel : ViewModel() {
+//    var id: String = UUID.randomUUID().toString()
+//    var title: String by mutableStateOf("")
+//    val area: String by mutableStateOf("")
+//    val schedule: String by mutableStateOf("")
+//    val modality: String by mutableStateOf("")
+//    val description: String by mutableStateOf("")
+//    val location: Location? by mutableStateOf(Location())
+//    var preparation: Preparation? by mutableStateOf(Preparation())
+//    val benefits: List<Benefit>? by mutableStateOf(listOf())
+//    val wageRange: WageRange? by mutableStateOf(WageRange())
+//    val details: List<Detail>? by mutableStateOf(listOf())
+//    val publisher: String? by mutableStateOf("")
+//    val consumers: List<String>? by mutableStateOf(listOf())
+//    val isActive: Boolean by mutableStateOf(false)
+//    val timestamp: Long = System.currentTimeMillis() / 1000
+//
+//    init {
+//        preparation = Preparation(education = listOf(Education()))
+//    }
+//}

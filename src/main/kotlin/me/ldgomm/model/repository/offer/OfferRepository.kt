@@ -20,6 +20,10 @@ class OfferRepository(db: CoroutineDatabase) : OfferRepositoriable {
         return offerCollection.find().descendingSort(Offer::timestamp).toList()
     }
 
+    override suspend fun readOffer(offer: Offer): Offer? {
+        return offerCollection.findOne(filter = Offer::idOffer eq offer.idOffer)
+    }
+
     override suspend fun updateOffer(offer: Offer): Boolean {
         TODO("Not yet implemented")
     }
