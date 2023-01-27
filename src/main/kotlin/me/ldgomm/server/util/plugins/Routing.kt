@@ -27,7 +27,7 @@ fun Application.configureRouting() {
         val partnerRepositoriable: PartnerRepositoriable by inject()
         val offerRepositoriable: OfferRepositoriable by inject()
 
-        authorizedRoute(application, clientRepositoriable)
+        authorizedRoute(application, clientRepositoriable, partnerRepositoriable)
         appleTokenVerificationRoute(application, authenticationRepositoriable)
         googleTokenVerificationRoute(application, authenticationRepositoriable)
         clientRoute(application, clientRepositoriable)
